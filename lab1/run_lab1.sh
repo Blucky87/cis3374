@@ -20,8 +20,9 @@ main() {
         nextitem=$1
     fi
 
-    options=()
-    options+=("Last Name" "$name_last")
+    declare -a options=()
+    
+    options=("Last Name" "$name_last")
     options+=("First Name" "$name_first")
     options+=("Middle Name" "$name_middle")
     options+=("Date of Birth" "$date_birth")
