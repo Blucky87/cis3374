@@ -31,6 +31,11 @@ if all arguments are present and valid it will immediatly write to external file
  __if -i flag is set, program will prompt for save confirmation__  
 
 
+#### for multiple entries:
+```sh
+for i in {1..10}; do python student_profile.py -i; done
+```
+
 ## Flags
 #### -i flag
 ```sh
@@ -41,5 +46,5 @@ prompts user for all missing or incorrect fields
 
 #### -l flag
 ```sh
-python student_profile_program.py -i 
+python student_profile_program.py -l luckenbill
 ```
