@@ -7,7 +7,8 @@ if sys.version_info < (3, 0):
     exit()
 
 # command line arguments that can be entered
-parser = argparse.ArgumentParser(description="Student Profile Entry Program")
+parser = argparse.ArgumentParser(description="Student Profile Entry Program",
+                    epilog="use -i flag for entry, or all fields must be valid")
 parser.add_argument("-i", help="prompt for inputting missing/invalid arguments",
                     dest='flag_interactive',
                     action='store_true')
@@ -20,13 +21,13 @@ parser.add_argument("-f", help="first name", metavar="firstname",
 parser.add_argument("-m", help="middle name", metavar="middlename",
                     dest='middle name',
                     action='store')
-parser.add_argument("-b", help="date of birth", metavar="dd/mm/yyyy",
+parser.add_argument("-b", help="date of birth", metavar="dd-mm-yyyy",
                     dest='date of birth',
                     action='store')
 parser.add_argument("-p", help="phone number", metavar="xxx-xxx-xxx",
                     dest='phone number',
                     action='store')
-parser.add_argument("-g", help="expected graduation date", metavar="dd/mm/yyyy",
+parser.add_argument("-g", help="expected graduation date", metavar="dd-mm-yyyy",
                     dest='expected graduation date',
                     action='store',)
 parser.add_argument("-t", help="9 digit tuid", metavar="xxxxxxxxx",
@@ -140,6 +141,6 @@ else:
 
 # if saving is set, append all argument dictionary (k,v) pairs to a file as json
 if save:
-    record_file = open('student_records.dat', 'a')
+    record_file = open('student_profiles.dat', 'a')
     record_file.write(json.dumps(argument_dictionary, indent=4) + '\n')
     record_file.close()
