@@ -1,113 +1,140 @@
 import argparse
 import json
 
+# command line arguments that can be entered
+parser = argparse.ArgumentParser(description="Student Record Entry Program")
+parser.add_argument("-i", help="prompt for inputting missing/invalid arguments",
+                    dest='flag_interactive',
+                    action='store_true')
+parser.add_argument("-l", help="last name", metavar="lastname",
+                    dest='last name',
+                    action='store')
+parser.add_argument("-f", help="first name", metavar="firstname",
+                    dest='first name',
+                    action='store')
+parser.add_argument("-m", help="middle name", metavar="middlename",
+                    dest='middle name',
+                    action='store')
+parser.add_argument("-b", help="date of birth", metavar="dd/mm/yyyy",
+                    dest='date of birth',
+                    action='store')
+parser.add_argument("-p", help="phone number", metavar="xxx-xxx-xxx",
+                    dest='phone number',
+                    action='store')
+parser.add_argument("-g", help="expected graduation date", metavar="dd/mm/yyyy",
+                    dest='expected graduation date',
+                    action='store',)
+parser.add_argument("-t", help="9 digit tuid", metavar="xxxxxxxxx",
+                    dest='temple university id',
+                    action='store')
+parser.add_argument("-e", help="email address", metavar="email",
+                    dest='email address',
+                    action='store')
+parser.add_argument("-j", help="academic major", metavar="major",
+                    dest='academic major',
+                    action='store')
 
-def constraint_tuid(argument_value: str) -> bool:
-    if not argument_value: return
-    return len(argument_value) == 9 and argument_value.isdigit()
+# can be flagged as EITHER undergrad OR graduate
+group = parser.add_mutually_exclusive_group()
+group.add_argument("-U", help="undergraduate student status",
+                   dest='flag_undergraduate',
+                   action='store_true')
+group.add_argument("-G", help="graduate student status",
+                   dest='flag_graduate',
+                   action='store_true')
 
 
-def constraint_status(argument_value: str) -> bool:
-    if not argument_value: return
-    return argument_value.lower() in ["undergraduate", "graduate", "u", "g", "undergrad"]
+def constraint_tuid(value: str) -> bool:
+    return len(value) == 9 and value.isdigit() \
+        if value \
+        else False
 
 
-def constraint_weak(argument_value: str) -> bool:
-    if not argument_value: return
-    return True
+def constraint_status(value: str) -> bool:
+    return value == "undergraduate" or value == "graduate" \
+           if value is not None \
+           else False
 
 
-def input_valid_value(argument_key: str) -> str:
-    constraint_pass = False
-    while not constraint_pass:
-        user_input = input("Enter value for {}: ".format(argument_key))
-        constraint_pass = argument_constraint_dictionary[argument_key](user_input)
+def constraint_weak(value: str) -> bool:
+    return value is not None
+
+
+def input_valid_value(key: str) -> str:
+    user_input = None
+    constraint_passing_input = user_input
+    while not constraint_passing_input:
+        user_input = input("enter value for {}: ".format(key))
+        constraint_passing_input = passing_constraints[key](user_input)
     return user_input
 
 
-def input_save_selection() -> bool:
+def input_save_selection(dictionary) -> bool:
+    print("-"*25)
+    for (key, value) in dictionary.items():
+        print(" {}: {}".format(key, value))
+    print("-"*25)
     while True:
-        user_input = input("Save Student Record to File? [Y/N]: ")
-        if user_input.lower() in ["y", "yes", "ye"]:
+        user_input = input("save student record to file? [y/n]: ").lower()
+        if user_input in ["y", "yes", "ye"]:
             return True
-        elif user_input.lower() in ["n", "no"]:
+        elif user_input in ["n", "no"]:
             return False
 
 
-# dictionary to look up argument variables to a formal name and their validation function
-argument_constraint_dictionary = {
-    'Last Name':  constraint_weak,
-    'First Name': constraint_weak,
-    'Middle Name': constraint_weak,
-    'Date of Birth': constraint_weak,
-    'Phone Number': constraint_weak,
-    'Expected Graduation Date': constraint_weak,
-    'Temple University ID': constraint_tuid,
-    'Email Address': constraint_weak,
-    'Academic Major': constraint_weak,
-    'Student Status': constraint_status
+# dictionary to look up validation checking functions by argument key
+passing_constraints = {
+    'last name':  constraint_weak,
+    'first name': constraint_weak,
+    'middle name': constraint_weak,
+    'date of birth': constraint_weak,
+    'phone number': constraint_weak,
+    'expected graduation date': constraint_weak,
+    'temple university id': constraint_tuid,
+    'email address': constraint_weak,
+    'academic major': constraint_weak,
+    'student status': constraint_status
 }
 
-# command line arguments that can be entered
-parser = argparse.ArgumentParser(description="Student Record Entry Program")
-parser.add_argument("-i",
-                    dest='flag_interactive',
-                    action='store_true')
-parser.add_argument("-l", help="Student Last Name", metavar="LASTNAME",
-                    dest='Last Name',
-                    action='store')
-parser.add_argument("-f", dest='First Name', action='store', metavar="FIRSTNAME", help="First Name")
-parser.add_argument("-m", dest='Middle Name', action='store', metavar="MIDDLENAME", help="Middle Name")
-parser.add_argument("-b", dest='Date of Birth', action='store', metavar="DD/MM/YYYY", help="Date of Birth")
-parser.add_argument("-p", dest='Phone Number', action='store', metavar="XXX-XXX-XXX", help="Phone Number")
-parser.add_argument("-g", dest='Expected Graduation Date', action='store', metavar="DD/MM/YYYY",
-                    help="Expected Graduation Date")
-parser.add_argument("-t", dest='Temple University ID', action='store', metavar="TUID",
-                    help="Temple University Identification Number")
-parser.add_argument("-e", dest='Email Address', action='store', metavar="EMAIL", help="Email Address")
-parser.add_argument("-j", dest='Academic Major', action='store', metavar="MAJOR", help="Academic Major")
-parser.add_argument("-F", help="Flag to force saving of incomplete record.",
-                    dest='flag_force_save',
-                    action='store_true')
-group = parser.add_mutually_exclusive_group()  # can enter as EITHER undergrad OR graduate
-group.add_argument("-U", dest='flag_undergraduate', action='store_true', help="Undergraduate Student Flag")
-group.add_argument("-G", dest='flag_graduate', action='store_true', help="Graduate Student Flag")
 
 # get parsed arguments from the command line and create Namespace
 argument_namespace = parser.parse_args()
 
-# create a dictionary from the namespace consisting of the arguments and their values
+# make a dictionary from the namespace using arguments and their values as (k,v)
 argument_dictionary = vars(argument_namespace)
 
-# get flags and remove them from dictionary
-interactive_mode = argument_dictionary.pop('flag_interactive')
+# save flags and remove them from argument dictionary
+interactive = argument_dictionary.pop('flag_interactive')
 undergraduate = argument_dictionary.pop('flag_undergraduate')
 graduate = argument_dictionary.pop('flag_graduate')
-save = argument_dictionary.pop('flag_force_save')
+save = True
 
-# add 'status' to arguments dictionary based off flags
-argument_dictionary['Student Status'] = "Undergraduate" if undergraduate else "Graduate" if graduate else None
+# add 'Student Status' key to argument dictionary, value is based off of flags
+argument_dictionary['student status'] = "undergraduate" if undergraduate \
+                                        else "graduate" if graduate \
+                                        else None
 
-# get all missing or invalid values from command line arguments
-missing_arguments = list(filter(lambda dictionary_item: not argument_constraint_dictionary[dictionary_item[0]](dictionary_item[1]), argument_dictionary.items()))
+# filter argument dict items to list of (k,v) pairs that do not pass constraints
+missing_argument_list = \
+    list(filter(
+        lambda dictionary_item:
+            not passing_constraints[dictionary_item[0]](dictionary_item[1]),
+        argument_dictionary.items()))
 
-# if interactive mode flag has been set, go through list of missing arguments and prompt for user input
-if interactive_mode:
-    for argument in missing_arguments:
+# if interactive, go through list of missing arguments and prompt for user input
+if interactive:
+    for argument in missing_argument_list:
         argument_dictionary[argument[0]] = input_valid_value(argument[0])
-    # ask if user wants to save data entered
-    save = input_save_selection()
+    save = input_save_selection(argument_dictionary)
 
-# if interactive mode has NOT been set display all missing arguments
+# print help screen if missing or invalid argument values exist
 else:
-    if missing_arguments:
-        print("Missing/Invalid Argument: ", end="")
-        for argument in missing_arguments:
-            print("[ {} ]".format(argument[0]), end=" ")
-    else:
-        save = True
+    if missing_argument_list:
+        parser.print_help()
+        save = False
 
+# if saving is set, append all argument dictionary (k,v) pairs to a file as json
 if save:
-    data_file = open('output.dat', 'a')
-    data_file.write(json.dumps(argument_dictionary, indent=4) + '\n')
-    data_file.close()
+    record_file = open('student_records.dat', 'a')
+    record_file.write(json.dumps(argument_dictionary, indent=4) + '\n')
+    record_file.close()
