@@ -1,24 +1,24 @@
 
 # Lab1 - Student Profile Program Usage
 
-Requires Python 3
+Requires Python 3  
 
-## usage
+## Usage
 #### for basic entry:
 ```sh
 python student_profile.py -i
 ```
-it will walk you through manual entry
+it will walk you through manual entry  
 
 #### for prefilled entry:
 ```sh
 python student_profile.py -i -l Luckenbill -f Brian -e tuf37823@temple.edu
 ```
-it will walk you through the missing arguments such as middle name, phone, etc
+it will walk you through the missing arguments such as middle name, phone, etc  
 
 #### for full entry:
 ```sh
-python student_profile.py -f jon -m joe -l smith \
+python student_profile.py -f john -m joe -l smith \
 -e jsmith@aol.com \
 -p 6271121212 \
 -b 01071940 \
@@ -27,9 +27,11 @@ python student_profile.py -f jon -m joe -l smith \
 -t 123456789 \
 -U
 ```
-if all arguments are present and valid it will immediatly write to external file
- __if -i flag is set, program will prompt for save confirmation__
+if all arguments are present and valid it will immediatly write to external file  
+ __if -i flag is set, program will prompt for save confirmation__  
 
+
+## Flags
 #### -i flag
 ```sh
 python student_profile_program.py -i 
