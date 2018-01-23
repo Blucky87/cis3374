@@ -1,22 +1,22 @@
 
-## Lab1 - Student Profile Program Usage
+# Lab1 - Student Profile Program Usage
 
 Requires Python 3
 
-### usage
-for basic entry:
+## usage
+#### for basic entry:
 ```sh
 python student_profile.py -i
 ```
 it will walk you through manual entry
 
-for prefilled entry:
+#### for prefilled entry:
 ```sh
 python student_profile.py -i -l Luckenbill -f Brian -e tuf37823@temple.edu
 ```
 it will walk you through the missing arguments such as middle name, phone, etc
 
-for full entry:
+#### for full entry:
 ```sh
 python student_profile.py -f jon -m joe -l smith \
 -e jsmith@aol.com \
